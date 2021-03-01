@@ -31,6 +31,20 @@ The problem I plan to solve is of predicting the number of Covid-19 cases in the
 The motivation is to create machine learning models trained on real data aid the analysis of the pandemic and inform public health decision making.   
 
 \section{Experimental procedure (35\%)}
+\subsection{Data preparation}
+First, we check for unwanted instances, which include those that are redundant and irrelevant. We do not observe any redundant instances that have appeared during data collection. Irrelevant instances are what are not useful for our specific task, so since we are training a model to predict the number of Covid-19 cases in the future, those instances with no date confirmation are not useful thus are removed.
+
+Next, we check for outliers. Outliers may cause issues, and, since linear regression models are sensitive to outliers, they should be dealt with. We only remove outliers that are [\dots]; the remaining are informative for our model. 
+
+Next, we deal with structural errors. We deal with typos, inconsistent English spelling, inconsistent capitalisation, and abbreviation. In the case of categorical features, we combined those that should be a single category, such as `died' and `death'.
+
+Next we deal with missing data. We decide to drop the instances with missing values, because most machine learning algorithms do not accept missing values.
+
+\subsection{Model selection}
+\subsection{Model training}
+\subsection{Model testing}
+\subsection{Hyperparameter tuning}
+\subsection{Inference/Prediction}
 \begin{itemize}
     \item Clean the dataset.
     \item Split the dataset into training and test sets.
