@@ -10,24 +10,49 @@ Machine Learning 2020/2021}
 
 \maketitle
 
-\cite{kramer1991nonlinear}
-
 \section{Problem framing (10\%)}
 Coronavirus (COVID‑19) is spreading fast. Since first reported in December 2019, by mid-January 2021, it has affected more than 95 million people and killed more than 2 million people worldwide. To aid the analysis and inform public health decision making, machine learning models trained on real data can be very useful.
 
-In this paper, we build and compare predictive models using machine learning algorithms and epidemiological data from the COVID-19 outbreak. We explore the dataset and aim to solve the problem of classifying the , with motivations  
+In this paper, we build and compare predictive models using machine learning algorithms and epidemiological data from the COVID-19 outbreak. We explore the dataset and aim to solve the problem of predicting patient outcome as either “died” or “discharged” from hospital. The motivation is that the proposed prediction model may be helpful for the quick triage of patients without having to wait for the results of additional tests such as laboratory or radiologic studies, during a pandemic when limited medical resources must be wisely allocated without hesitation. 
 
 \section{Experimental procedure (35\%)}
+The experimental procedure was to follow the machine learning workflow, which consists of 7 stages: problem framing, data preparation, model selection, model training, model testing, hyperparameter tuning, and inference/prediction. 
+
 \subsection{Data preparation}
-First, we check for unwanted instances, which include those that are redundant and irrelevant. We do not observe any redundant instances that have appeared during data collection. Irrelevant instances are what are not useful for our specific task, so since we are training a model to predict the number of Covid-19 cases in the future, those instances with no date confirmation are not useful thus are removed.
+We downloaded the dataset from GitHub \cite{xu2020Epidemiological}.
 
-Next, we check for outliers. Outliers may cause issues, and, since linear regression models are sensitive to outliers, they should be dealt with. We only remove outliers that are [\dots]; the remaining are informative for our model. 
+\subsubsection{Data collection}
+We removed unwanted instances, which includes those that are redundant and irrelevant. We removed irrelevant instances, which are those that are not useful for the task; these were instances that had null or values unrelated to 'died' or 'discharged' in the 'outcome' column. No redundant (or duplicate) instances wer found.
 
-Next, we deal with structural errors. We deal with typos, inconsistent English spelling, inconsistent capitalisation, and abbreviation. In the case of categorical features, we combined those that should be a single category, such as `died' and `death'.
+We removed outliers.
 
-Next we deal with missing data. We decide to drop the instances with missing values, because most machine learning algorithms do not accept missing values.
+Next, we corrected structural errors. We deal with typos, inconsistent English spelling, inconsistent capitalisation, and abbreviation. In the case of categorical features, we combined those that should be a single category, such as `died', 'dead', and `death'.
+
+Next, we corrected missing data. We decide to drop the instances with missing values, because most machine learning algorithms do not accept missing values. We are careful when we do this
+
+\subsubsection{Data sampling}
+
+We notice we have an imbalanced data set, so we employ down sampling and up-weighting during model training.
+
+\subsubsection{Data splitting}
+We split the dataset into training set and test set. We keep them separate, as we don't want the model to memorise. Before splitting, we randomise the dataset as we don't want the order of the instances, which is irrelevant, to affect the model training process. We make our test set meet two conditions: it is large enough to yield statistically meaningful results, and it is representative of the dataset as a while.
+
+To prevent overfitting, we produce a validation set. We train the moddel on the training set, then evaluate the model on the validation set and use those results to tweak the odel iteratively. We leave the test set separate to only confirm results of the model that does best on the validation set. This creates fewer exposures to the test set.
+
+We employ k-fold cross validation to reduce the chance of overfitting, assess how well the model performs on previously unseen data, and resampling producedure to tes models on a limited data sample
+
+\subsubsection{Data transformation}
+Before feature transformation we explore and clean up data and visualise data in graphs and charts.
+
+We perform data transformation for data compatibiltiy and better model performance.
+
+Numeric data. We perform binning on age. We perform feature scaling because we will be using SVM, kNN, PCA, clustering (not necessary for logistic regression, decision tree). 
+
+categorical data. We encode categorical data in roder to be able to fit and evaluaet models. We use one-hot encoding
 
 \subsection{Model selection}
+We chose SVM, kNN, and logistic reg.
+
 \subsection{Model training}
 \subsection{Model testing}
 \subsection{Hyperparameter tuning}
