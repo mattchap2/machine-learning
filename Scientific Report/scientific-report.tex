@@ -19,16 +19,15 @@ In this paper, we build and compare predictive models using machine learning alg
 The experimental procedure was to follow the machine learning workflow, which consists of 7 stages: problem framing, data preparation, model selection, model training, model testing, hyperparameter tuning, and inference/prediction. 
 
 \subsection{Data preparation}
-We downloaded the dataset from GitHub \cite{xu2020Epidemiological}.
+We used the dataset by \cite{xu2020Epidemiological} which is publicly available on GitHub\footnote{github.com/beoutbreakprepared/nCoV2019/}.
 
-\subsubsection{Data collection}
-We removed unwanted instances, which includes those that are redundant and irrelevant. We removed irrelevant instances, which are those that are not useful for the task; these were instances that had null or values unrelated to 'died' or 'discharged' in the 'outcome' column. No redundant (or duplicate) instances wer found.
+First, we removed irrelevant instances. These are instances that are not useful for the task. Since we are training models to predict patient outcome, irrelevant instances had `null' as the outcome. We also corrected structural errors, such as inconsistent capitalisation. We made one category for `died', `Died', `dead', or similar, and another for `discharged', `Discharged', `recovered', or similar. Instances which did not fall under either one of these two categories were dropped. 
 
-We removed outliers.
+Second, we kept attributes which we thought could be useful to the models. The attributes kept were `age', `sex', `country', `latitude', `longitude', `date\_onset\_symptoms', `date\_confirmation', `symptoms', `chronic\_disease\_binary', and `travel\_history\_binary'. After this, we cleaned up the data by replacing `date\_onset\_symptoms' and `symptoms' with a new attribute, `symptoms\_binary', then dropping any remaining instances with missing values. 
 
-Next, we corrected structural errors. We deal with typos, inconsistent English spelling, inconsistent capitalisation, and abbreviation. In the case of categorical features, we combined those that should be a single category, such as `died', 'dead', and `death'.
+Third, we transformed numeric data. We perform data binning on the 'age' 
 
-Next, we corrected missing data. We decide to drop the instances with missing values, because most machine learning algorithms do not accept missing values. We are careful when we do this
+Fourth, we transformed categorical data.
 
 \subsubsection{Data sampling}
 
