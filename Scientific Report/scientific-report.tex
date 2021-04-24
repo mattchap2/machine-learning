@@ -25,7 +25,7 @@ First, we removed irrelevant instances. These are instances that are not useful 
 
 Second, we kept attributes which we thought could be useful to the models. The attributes kept were `age', `sex', `country', `latitude', `longitude', `date\_onset\_symptoms', `date\_confirmation', `symptoms', `chronic\_disease\_binary', and `travel\_history\_binary'. After this, we cleaned up the data by replacing `date\_onset\_symptoms' and `symptoms' with a new attribute, `symptoms\_binary', then dropping any remaining instances with missing values. 
 
-Third, we transformed numeric data. We perform data binning on the 'age' 
+Third, we transformed numeric data. We perform data binning on the `age' attribute. The ranges were `0-14', `15-34', `35-59', `60-79', and `80+'. These were chosen because the `age' attribute was in fact already categorical, and the latter 4 ranges were the 4 most frequent categories. We also perform standardisation on the `latitude' and `longitude' attributes. (remove country)
 
 Fourth, we transformed categorical data.
 
