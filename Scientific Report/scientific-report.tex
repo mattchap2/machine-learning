@@ -2,6 +2,8 @@
 
 \usepackage{style/jmlr2e}
 \usepackage{subcaption}
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
 
 \begin{document}
 
@@ -45,7 +47,7 @@ For the linear regression classifier, the best accuracy score was 0.80, with $C=
     \caption{Confusion matrices for each predictive model.}
     \begin{subtable}{.33\linewidth}
       \centering
-        \caption{Linear regression.}
+        \caption{LRC.}
         \begin{tabular}{|c|cc|c|}
             \hline
             Pred. & 0 & 1 & all \\
@@ -60,7 +62,7 @@ For the linear regression classifier, the best accuracy score was 0.80, with $C=
     \end{subtable}%
     \begin{subtable}{.33\linewidth}
       \centering
-        \caption{Gradient boosting.}
+        \caption{GBC.}
         \begin{tabular}{|c|cc|c|}
             \hline
             Pred. & 0 & 1 & all \\
@@ -75,7 +77,7 @@ For the linear regression classifier, the best accuracy score was 0.80, with $C=
     \end{subtable}%
     \begin{subtable}{.33\linewidth}
         \centering
-          \caption{Support vector.}
+          \caption{SVC.}
           \begin{tabular}{|c|cc|c|}
             \hline
             Pred. & 0 & 1 & all \\
@@ -95,14 +97,66 @@ For the linear regression classifier, the best accuracy score was 0.80, with $C=
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
-        Model & NPV & PPV & Specificity & Sensitivity & F1 Score & Accuracy \\
+        \textbf{Model} & \textbf{NPV} & \textbf{PPV} & \textbf{Specificity} & \textbf{Sensitivity} & \textbf{F1 Score} & \textbf{Accuracy} \\
         \hline
-        LRC & 0.56 & 0.92 & 0.77 & 0.82 & 0.87 & 0.81 \\
-        GBC & 0.85 & 0.86 & 0.47 & 0.98 & 0.91 & 0.86 \\
-        SVC & 0.82 & 0.86 & 0.45 & 0.97 & 0.91 & 0.85 \\
+        LRC & 0.56 & $\mathbf{0.92}$ & $\mathbf{0.77}$ & 0.82 & 0.87 & 0.81 \\
+        GBC & $\mathbf{0.85}$ & 0.86 & 0.47 & $\mathbf{0.98}$ & $\mathbf{0.91}$ & $\mathbf{0.86}$ \\
+        SVC & 0.82 & 0.86 & 0.45 & 0.97 & $\mathbf{0.91}$ & 0.85 \\
         \hline
     \end{tabular}
 \end{table}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{lr-roc}
+        \caption{LRC.}
+        \label{fig:lr-roc}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{gb-roc}
+        \caption{GBC.}
+        \label{fig:gb-roc}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sv-roc}
+        \caption{SVC.}
+        \label{fig:sv-roc}
+    \end{subfigure}
+       \caption{Three simple graphs}
+       \label{fig:roc}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{lr-precrec}
+        \caption{LRC.}
+        \label{fig:lr-precrec}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{gb-precrec}
+        \caption{GBC.}
+        \label{fig:gb-precrec}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{sv-precrec}
+        \caption{SVC.}
+        \label{fig:sv-precrec}
+    \end{subfigure}
+       \caption{Three simple graphs}
+       \label{fig:precrec}
+\end{figure}
 
 
 \begin{itemize}
