@@ -4,65 +4,40 @@
 
 \begin{document}
 
-\title{Summative Assignment\\ 
-Artificial Intelligence COMP2261 –\\
-Machine Learning 2020/2021}
+\title{Machine Learning Scientific Report}
 
 \maketitle
 
 \section{Problem framing (10\%)}
 Coronavirus (COVID‑19) is spreading fast. Since first reported in December 2019, by mid-January 2021, it has affected more than 95 million people and killed more than 2 million people worldwide. To aid the analysis and inform public health decision making, machine learning models trained on real data can be very useful.
 
-In this paper, we build and compare predictive models using machine learning algorithms and epidemiological data from the COVID-19 outbreak. We explore the dataset and aim to solve the problem of predicting patient outcome as either “died” or “discharged” from hospital. The motivation is that the proposed prediction model may be helpful for the quick triage of patients without having to wait for the results of additional tests such as laboratory or radiologic studies, during a pandemic when limited medical resources must be wisely allocated without hesitation. 
+In this paper, we build and compare predictive models using machine learning (ML) algorithms and epidemiological data from the COVID-19 outbreak. We explore the dataset and aim to solve the problem of predicting patient outcome as either “died” or “discharged” from hospital. The motivation is that the proposed prediction model may be helpful for the quick triage of patients without having to wait for the results of additional tests such as laboratory or radiologic studies, during a pandemic when limited medical resources must be wisely allocated without hesitation. 
 
 \section{Experimental procedure (35\%)}
-The experimental procedure was to follow the machine learning workflow, which consists of 7 stages: problem framing, data preparation, model selection, model training, model testing, hyperparameter tuning, and inference/prediction. 
+We begin by exploring the dataset we use, which is by \cite{xu2020Epidemiological} and is publicly available on GitHub.\footnote{github.com/beoutbreakprepared/nCoV2019/} To better understand the data, we produce a number of visualisations: we create a bar plot of up to the 10 most frequent values of each categorical attribute (e.g., \emph{symptoms}); we create a scatter plot of the \emph{latitude} and \emph{longitude} of each case; and, we plot the daily and monthly number of cases globally and by country (e.g., China). From these visualisations, we get a strong overview of the spread of COVID-19 by location and by time. Next, we prepare the dataset for use by ML algorithms.
 
 \subsection{Data preparation}
-We used the dataset by \cite{xu2020Epidemiological} which is publicly available on GitHub\footnote{github.com/beoutbreakprepared/nCoV2019/}.
+First, we removed irrelevant instances. These were instances that were not useful for the task. Since we were training models to predict patient outcome, irrelevant instances were those whose value of the target, \emph{outcome}, was not one of either \emph{died} or \emph{discharged}. To remove such instances, we had to correct structural errors, such as inconsistent capitalisation and wording among target values. We replaced the \emph{Died}, \emph{dead}, or similar values with \emph{died}; and, we replaced the \emph{Discharged}, \emph{recovered}, or similar values with \emph{discharged}. Instances with target values whose meaning was dissimilar to either of these two values, including \emph{null} values, were dropped.
 
-First, we removed irrelevant instances. These are instances that are not useful for the task. Since we are training models to predict patient outcome, irrelevant instances had `null' as the outcome. We also corrected structural errors, such as inconsistent capitalisation. We made one category for `died', `Died', `dead', or similar, and another for `discharged', `Discharged', `recovered', or similar. Instances which did not fall under either one of these two categories were dropped. 
+Second, we kept attributes which we thought would be useful. The attributes kept, which became features, were \emph{age}, \emph{sex}, \emph{latitude}, \emph{longitude}, \emph{date\_onset\_symptoms}, \emph{symptoms}, \emph{chronic\_disease\_binary}, and \emph{travel\_history\_binary}. After this, we replaced the \emph{symptoms} and \emph{date\_onset\_symptoms} features with a new \emph{symptoms\_binary} feature, and cleaned up the dataset by dropping any remaining instances with missing values. 
 
-Second, we kept attributes which we thought could be useful to the models. The attributes kept were `age', `sex', `country', `latitude', `longitude', `date\_onset\_symptoms', `date\_confirmation', `symptoms', `chronic\_disease\_binary', and `travel\_history\_binary'. After this, we cleaned up the data by replacing `date\_onset\_symptoms' and `symptoms' with a new attribute, `symptoms\_binary', then dropping any remaining instances with missing values. 
+Third, we transformed numerical data. We performed data binning on the \emph{age} feature, and created categorical values for the age ranges \emph{0-14}, \emph{15-34}, \emph{35-59}, \emph{60-79}, and \emph{80+}. These were chosen because the \emph{age} feature was in fact already categorical, and the latter 4 categories were the 4 most frequent. We also performed feature scaling on the \emph{latitude} and \emph{longitude} features by standardisation, also known as Z-score normalisation, which rescales the feature values to have zero-mean and unit-variance.  
 
-Third, we transformed numeric data. We perform data binning on the `age' attribute. The ranges were `0-14', `15-34', `35-59', `60-79', and `80+'. These were chosen because the `age' attribute was in fact already categorical, and the latter 4 ranges were the 4 most frequent categories. We also perform standardisation on the `latitude' and `longitude' attributes. (remove country)
+Fourth, we transformed categorical data. We performed one-hot encoding on the \emph{age} and \emph{sex} features since they had nominal data. Also, we encode the target values so that \emph{discharged} corresponds to 1 and \emph{died} corresponds to 0. The reason for performing these transformations is that ML algorithms require features to be numbers. 
 
-Fourth, we transformed categorical data.
-
-\subsubsection{Data sampling}
-
-We notice we have an imbalanced data set, so we employ down sampling and up-weighting during model training.
-
-\subsubsection{Data splitting}
-We split the dataset into training set and test set. We keep them separate, as we don't want the model to memorise. Before splitting, we randomise the dataset as we don't want the order of the instances, which is irrelevant, to affect the model training process. We make our test set meet two conditions: it is large enough to yield statistically meaningful results, and it is representative of the dataset as a while.
-
-To prevent overfitting, we produce a validation set. We train the moddel on the training set, then evaluate the model on the validation set and use those results to tweak the odel iteratively. We leave the test set separate to only confirm results of the model that does best on the validation set. This creates fewer exposures to the test set.
-
-We employ k-fold cross validation to reduce the chance of overfitting, assess how well the model performs on previously unseen data, and resampling producedure to tes models on a limited data sample
-
-\subsubsection{Data transformation}
-Before feature transformation we explore and clean up data and visualise data in graphs and charts.
-
-We perform data transformation for data compatibiltiy and better model performance.
-
-Numeric data. We perform binning on age. We perform feature scaling because we will be using SVM, kNN, PCA, clustering (not necessary for logistic regression, decision tree). 
-
-categorical data. We encode categorical data in roder to be able to fit and evaluaet models. We use one-hot encoding
+Finally, we randomise the resulting dataset, which has 5,206 instances, as we do not want the order of the instances, which is irrelevant, to affect the model training process; and, we split the data into a training set, validation set, and test set to prevent overfitting. We create a test set by selecting a 20\% subset of the dataset so there are at least 1,000 test instances, which is large enough to yield statistically meaningful results. Since we suspect the \emph{chronic\_disease\_binary} attribute to be an important feature to predict \emph{outcome}, we chose to ensure that the the test set was representative of the overall \emph{chronic\_disease\_binary} distribution by doing stratified sampling. The overall distribution was that 98.2\% of values were \emph{False} while the remaining 1.8\% were \emph{True}. We also observe that we maintain an exact balance of train and test target values, which makes it easier to train models.
 
 \subsection{Model selection}
-We chose SVM, kNN, and logistic reg.
+The three ML algorithms we chose to build predictive models were the logistic regression classifier, gradient boosting classifier, and support vector classifier. We chose the first two algorithms because they were demonstrated in \emph{Exercise for Logistic Regression}\footnote{} and the third because it was recommended by the 
+
+Using the ML Cheat Sheet (for scikit-learn)\footnote{scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html}, we are told to try the following 3 models for our classification task: Linear SVC, KNeighbours Classifier, and SVC, where SVC stands for support vector classification.
 
 \subsection{Model training}
+For each of the 3 models, we iteratively train the model on the training set, evaluate the model on the validation set, and tweak the model according to the results on the validation set. In particular, we employ 4-fold cross-validation so that the size of the validation set is equal to the size of the test set. This reduces the chance of overfitting. Then, we pick the model with the set of hyperparameters that does best on the validation set and confirm the results on the test set. This approach allows us to compare different trained models in an unbiased way, by comparing model performance using the test set, which is kept apart from the training process and is therefore unseen data.
+
 \subsection{Model testing}
 \subsection{Hyperparameter tuning}
 \subsection{Inference/Prediction}
-\begin{itemize}
-    \item Clean the dataset.
-    \item Split the dataset into training and test sets.
-    \item Train a logistic regression model.
-    \item Train a polynomial regression model.
-    \item Train a normal regression model.
-\end{itemize}
 
 \section{Results (25\%)}
 \begin{itemize}
@@ -73,7 +48,18 @@ We chose SVM, kNN, and logistic reg.
 \section{Discussions (20\%)}
 \subsection{Chosen models}
 \subsection{Experimental procedure}
+\begin{itemize}
+    \item standardisation is commonly used by KNN, SVM, PCA, etc. but not necessary for logistic reg, tree-based, and random forest
+    \item standardisation helps better deal with outliers, but min-max can generate smaller std; could have tried fitting model to raw, normalised, and standardised data da the ncompare their performances for the best results
+    \item could have imputed
+\end{itemize}
 \subsection{Limitations}
+\begin{itemize}
+    \item Was going to include `country', then saw that data over represents Philippines
+    \item Further work can include date\_confirmation
+    \item We notice we have an imbalanced data set, so we employ down sampling and up-weighting during model training.
+    \item Larger k means less (pessimistic) bias. Leave-One-Out Cross-Validation is too computationally expesive.
+\end{itemize}
 
 \section{Conclusions and lessons learnt (10\%)}
 \begin{itemize}
