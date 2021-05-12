@@ -37,18 +37,18 @@ Fifth, we transformed categorical data. We performed one-hot encoding on the \em
 Finally, we randomise the resulting dataset, which has 5,206 instances, as we do not want the order of the instances, which is irrelevant, to affect the model training process; and, we split the data into a training set, validation set, and test set to prevent overfitting. We create a test set by selecting a 20\% subset of the dataset so there are at least 1,000 test instances, which is large enough to yield statistically meaningful results. Since we suspect the \emph{chronic\_disease\_binary} attribute to be an important feature to predict \emph{outcome}, we chose to ensure that the the test set was representative of the overall \emph{chronic\_disease\_binary} distribution by doing stratified sampling. The overall distribution was that 98.2\% of values were \emph{False} while the remaining 1.8\% were \emph{True}. We also observe that we maintain an exact balance of train and test target values (75.3\% being \emph{discharged}), which makes it easier to train models.
 
 \subsection{Model selection, training, and testing}
-The three ML algorithms we chose to build predictive models were the logistic regression classifier (LRC), gradient boosting classifier (GBC), and support vector classifier (SVC). For each of the three models, we iteratively train the model on the training set, evaluate the model on the validation set, and tweak the model according to the results on the validation set. In particular, we employ 4-fold cross-validation so that the size of the validation set is equal to the size of the test set. This further reduces the chance of overfitting. Then, we pick the model with the set of hyperparameters that does best on the validation set and confirm the results on the test set. This approach allows us to compare different trained models in an unbiased way, by comparing model performance using the test set, which is kept apart from the training process and is therefore unseen data.
+The three ML algorithms we chose to build predictive models were logistic regression classification (LRC), gradient boosting classification (GBC), and support vector classification (SVC). For each of these three models, we iteratively train the model on the training set, evaluate the model on the validation set, and tweak the model according to the results on the validation set. In particular, we employ 4-fold cross-validation so that the size of the validation set is equal to the size of the test set. This further reduces the chance of overfitting. Then, we pick the model with the set of hyperparameters that does best on the validation set and confirm the results on the test set. This approach allows us to compare different trained models in an unbiased way, by comparing model performance using the test set, which is kept apart from the training process and is therefore unseen data.
 
 \subsection{Hyperparameter tuning}
-We tried different hyperparameter combinations for each model. For the LRC, we tried values 0.001, 0.01, 0.1, 1, 10, 100, and 1000 for $C$, the regularisation hyperparameter; and, we tried $L_1$ and $L_2$ regularisation for the norm used in the penalisation. For the GBC, we tried values 2, 4, 8, and 16 for the minimum number of samples required to be at a leaf node (\emph{min\_samples\_leaf}); and, values 0.001, 0.01, and 0.1 for the learning rate. For the SVC, we tried values 0.75, 0.85, 0.95, and 1 for $C$; and, linear, polynomial, radial-basis, and sigmoid kernel types. 
+We tried different hyperparameter combinations for each model. For LRC, we tried values 0.001, 0.01, 0.1, 1, 10, 100, and 1000 for $C$, the regularisation hyperparameter; and, we tried $L_1$ and $L_2$ regularisation for the norm used in the penalisation. For GBC, we tried values 2, 4, 8, and 16 for the minimum number of samples required to be at a leaf node (\emph{min\_samples\_leaf}); and, values 0.001, 0.01, and 0.1 for the learning rate. And, for SVC, we tried values 0.75, 0.85, 0.95, and 1 for $C$; and, linear, polynomial, radial-basis, and sigmoid kernel types. 
 
-For the LRC, the best model achieved a 0.80 accuracy score with hyperparameter combination $C=1000$ and $L_2$ regularisation. For the GBC, the best model achieved a 0.85 accuracy score with hyperparameter combination \emph{min\_samples\_leaf}$=2$ and learning rate 0.01. For the SVC, the best model achieved a 0.84 accuracy score with hyperparameter combination $C=1$ and radial-basis kernel type. 
+For LRC, the best model achieved a 0.80 accuracy score with hyperparameter combination $C=1000$ and $L_2$ regularisation. For GBC, the best model achieved a 0.85 accuracy score with hyperparameter combination \emph{min\_samples\_leaf}$=2$ and learning rate 0.01. And, for SVC, the best model achieved a 0.84 accuracy score with hyperparameter combination $C=1$ and radial-basis kernel type. 
 
-\section{Results (25\%)}
-Next, we evaluate the trained models on the test set. To enable evaluation, we produce the following: the confusion matrix, positive predictive value (PPV), negative predictive value (NPV), sensitivity, specificity, $F_1$ score, accuracy, and receiver operating characteristic (ROC) curve, for each model.
+\section{Results}
+Having found the best hyperparameter combinations to train the best models for all three ML algorithms, we then evaluate the trained models on the test set. To enable evaluation, we produce the following: the confusion matrix, positive predictive value (PPV), negative predictive value (NPV), sensitivity, specificity, $F_1$ score, accuracy, and receiver operating characteristic (ROC) curve, for each model.
 
 \begin{table}[!htb]
-    \caption{Confusion matrices produced by each predictive model on the test set.}
+    \caption{Confusion matrices produced by each trained model on the test set.}
     \begin{subtable}{.33\linewidth}
       \centering
         \caption{LRC.}
@@ -97,17 +97,18 @@ Next, we evaluate the trained models on the test set. To enable evaluation, we p
 \end{table}
 
 \begin{table}[!htb]
-    \caption{Statistics produced by each predictive model on the test set.}
+    \caption{Statistics produced by each trained model on the test set.}
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|}
         \hline
-        \textbf{Model} & \textbf{NPV} & \textbf{PPV} & \textbf{Specificity} & \textbf{Sensitivity} & \textbf{F1 Score} & \textbf{Accuracy} \\
+        \textbf{Model} & \textbf{NPV} & \textbf{PPV} & \textbf{Specificity} & \textbf{Sensitivity} & \textbf{$F_1$ Score} & \textbf{Accuracy} \\
         \hline
         LRC & 0.56 & $\mathbf{0.92}$ & $\mathbf{0.77}$ & 0.82 & 0.87 & 0.81 \\
         GBC & $\mathbf{0.85}$ & 0.86 & 0.47 & $\mathbf{0.98}$ & $\mathbf{0.91}$ & $\mathbf{0.86}$ \\
         SVC & 0.82 & 0.86 & 0.45 & 0.97 & $\mathbf{0.91}$ & 0.85 \\
         \hline
     \end{tabular}
+    \label{tab:stats}
 \end{table}
 
 \begin{figure}[h]
@@ -132,7 +133,7 @@ Next, we evaluate the trained models on the test set. To enable evaluation, we p
         \caption{SVC.}
         \label{fig:sv-roc}
     \end{subfigure}
-       \caption{ROC curves produced by each predictive model on the test set.}
+       \caption{ROC curves produced by each trained model on the test set.}
        \label{fig:roc}
 \end{figure}
 
@@ -162,39 +163,28 @@ Next, we evaluate the trained models on the test set. To enable evaluation, we p
 %        \label{fig:precrec}
 % \end{figure}
 
+By looking at the area under the curve (AUC), which is a measure of separability, of the ROC curves in Figure \ref{fig:roc}, we see that GBC produces the highest value followed by LRC then SVC. Since a higher AUC value corresponds to more `idealistic' behaviour (i.e., more correct classifications), we determine that GBC has the best performance for solving our classification problem, followed by LRC then SVC. This ordering is also reflected by the statistics in Table \ref{tab:stats}, which show that GBC performs best in 4 metrics (highlighted in bold), followed by LRC in 2 metrics, and SVC in only 1. 
 
-\begin{itemize}
-    \item Make comparisons between the 3 predictive models
-    \item Provide necessary tables and charts to summarise and support the comparisons.
-\end{itemize}
-
-\section{Discussions (20\%)}
+\section{Discussions}
 \subsection{Chosen models}
-We chose the first two algorithms because they were demonstrated in \emph{Exercise for Logistic Regression}\footnote{tinyurl.com/COMP2261prac6} with breast cancer prediction, and the third because it is recommended by the ML Cheat Sheet (for scikit-learn)\footnote{scikit-learn.org/stable/tutorial/machine\_learning\_map/index.html}.
+The reason we chose to implement LRC and GBC is that they were demonstrated in the practical \emph{Exercise for Logistic Regression}\footnote{tinyurl.com/COMP2261prac6} with breast cancer prediction. As such, we base our code on these demonstrations. As for SVC, we chose this algorithm because it was recommended for our problem after consulting the `ML Cheat Sheet' (for scikit-learn)\footnote{scikit-learn.org/stable/tutorial/machine\_learning\_map/index.html}, since we had less than 100k samples and no text data.
+
 \subsection{Experimental procedure}
-\begin{itemize}
-    \item standardisation is commonly used by KNN, SVM, PCA, etc. but not necessary for logistic reg, tree-based, and random forest
-    \item standardisation helps better deal with outliers, but min-max can generate smaller std; could have tried fitting model to raw, normalised, and standardised data da the ncompare their performances for the best results
-    \item could have imputed
-\end{itemize}
+Although standardisation was useful for LRC and SVC, it does not affect tree based models such as GBC since they are not affected by linear transformations. Nonetheless, standardisation would have helped the model better deal with outliers. However, because we only performed standardisation, we do not know whether min-max normalisation would have produced better results. In future, we can try fitting the model to raw data, min-max normalised data, and standardised data, and compare the results to find the best. 
+
+Another procedure we could have done differently is to split the dataset into train and test sets before performing any data cleaning or transformation. Had we done so, we may have gotten different results. 
+
 \subsection{Limitations}
-\begin{itemize}
-    \item Was going to include `country', then saw that data over represents Philippines
-    \item Further work can include date\_confirmation
-    \item We notice we have an imbalanced data set, so we employ down sampling and up-weighting during model training.
-    \item Larger k means less (pessimistic) bias. Leave-One-Out Cross-Validation is too computationally expesive.
-    \item  deviance and exponential loss functions to be optimised for gradient boosting
-\end{itemize}
+One limitation of the implementation is that the predictive models use only a handful of attributes that were present in the raw dataset to perform classification. We were going to include the \emph{country} feature in model training; however, we found that the values were skewed towards one country (\emph{Phillipines}), which might affect training performance. Similarly, we wanted to include the \emph{date\_confirmation} attribute; however, our initial exploration of the dataset showed that there were many outliers (spikes in the number of cases around the start or end of each month), and so the attribute might not contain much useful information.
 
-\section{Conclusions and lessons learnt (10\%)}
-\begin{itemize}
-    \item Discuss the results and draw conclusions from your experimentation
-\end{itemize}
+Another limitation of the implementation is that we do not explicitly perform down sampling or up-weighted during model training to account for the imbalanced data set, since \emph{discharged} accounts for about 75\% of \emph{outcome} values. Had we done this, we may have observed fewer false positives or false negatives in the confusion matrix.
 
+Finally, we could have included more hyperparameters to try in our combinations, such as the deviance and exponential loss functions to be optimised for GBC and degree of the polynomial kernel function for SVC.
 
+\section{Conclusions and lessons learnt}
+Overall, we conclude that GBC is the best ML algorithm at solving our problem of predicting confirmed cases' outcomes as either \emph{died} or \emph{discharged}. Moreover, we learned the lesson that we can never conduct enough experiments in ML, since there are always more algorithms to try, attributes to select, and hyperparameters to tune.
 
-
-\vskip 0.2in
+% \vskip 0.2in
 \bibliography{references}
 
 \end{document}
