@@ -1,6 +1,7 @@
 \documentclass[twoside,11pt]{article}
 
 \usepackage{style/jmlr2e}
+\usepackage{subcaption}
 
 \begin{document}
 
@@ -21,25 +22,89 @@ First, we removed irrelevant instances. These were instances that were not usefu
 
 Second, we kept attributes which we thought would be useful. The attributes kept, which became features, were \emph{age}, \emph{sex}, \emph{latitude}, \emph{longitude}, \emph{date\_onset\_symptoms}, \emph{symptoms}, \emph{chronic\_disease\_binary}, and \emph{travel\_history\_binary}. After this, we replaced the \emph{symptoms} and \emph{date\_onset\_symptoms} features with a new \emph{symptoms\_binary} feature, and cleaned up the dataset by dropping any remaining instances with missing values. 
 
-Third, we transformed numerical data. We performed data binning on the \emph{age} feature, and created categorical values for the age ranges \emph{0-14}, \emph{15-34}, \emph{35-59}, \emph{60-79}, and \emph{80+}. These were chosen because the \emph{age} feature was in fact already categorical, and the latter 4 categories were the 4 most frequent. We also performed feature scaling on the \emph{latitude} and \emph{longitude} features by standardisation, also known as Z-score normalisation, which rescales the feature values to have zero-mean and unit-variance.  
+Third, we transformed numerical data. We performed data binning on the \emph{age} feature, and created categorical values for the age ranges \emph{0-14}, \emph{15-34}, \emph{35-59}, \emph{60-79}, and \emph{80+}. These were chosen because the \emph{age} feature was in fact already categorical, and the latter four categories were the four most frequent. We also performed feature scaling on the \emph{latitude} and \emph{longitude} features by standardisation, also known as Z-score normalisation, which rescales the feature values to have zero-mean and unit-variance.  
 
 Fourth, we transformed categorical data. We performed one-hot encoding on the \emph{age} and \emph{sex} features since they had nominal data. Also, we encode the target values so that \emph{discharged} corresponds to 1 and \emph{died} corresponds to 0. The reason for performing these transformations is that ML algorithms require features to be numbers. 
 
-Finally, we randomise the resulting dataset, which has 5,206 instances, as we do not want the order of the instances, which is irrelevant, to affect the model training process; and, we split the data into a training set, validation set, and test set to prevent overfitting. We create a test set by selecting a 20\% subset of the dataset so there are at least 1,000 test instances, which is large enough to yield statistically meaningful results. Since we suspect the \emph{chronic\_disease\_binary} attribute to be an important feature to predict \emph{outcome}, we chose to ensure that the the test set was representative of the overall \emph{chronic\_disease\_binary} distribution by doing stratified sampling. The overall distribution was that 98.2\% of values were \emph{False} while the remaining 1.8\% were \emph{True}. We also observe that we maintain an exact balance of train and test target values, which makes it easier to train models.
+Finally, we randomise the resulting dataset, which has 5,206 instances, as we do not want the order of the instances, which is irrelevant, to affect the model training process; and, we split the data into a training set, validation set, and test set to prevent overfitting. We create a test set by selecting a 20\% subset of the dataset so there are at least 1,000 test instances, which is large enough to yield statistically meaningful results. Since we suspect the \emph{chronic\_disease\_binary} attribute to be an important feature to predict \emph{outcome}, we chose to ensure that the the test set was representative of the overall \emph{chronic\_disease\_binary} distribution by doing stratified sampling. The overall distribution was that 98.2\% of values were \emph{False} while the remaining 1.8\% were \emph{True}. We also observe that we maintain an exact balance of train and test target values (75.3\% being \emph{discharged}), which makes it easier to train models.
 
 \subsection{Model selection}
-The three ML algorithms we chose to build predictive models were the logistic regression classifier, gradient boosting classifier, and support vector classifier. We chose the first two algorithms because they were demonstrated in \emph{Exercise for Logistic Regression}\footnote{} and the third because it was recommended by the 
+The three ML algorithms we chose to build predictive models were the logistic regression classifier (LRC), gradient boosting classifier (GBC), and support vector classifier (SVC). We chose the first two algorithms because they were demonstrated in \emph{Exercise for Logistic Regression}\footnote{tinyurl.com/COMP2261prac6} with breast cancer prediction, and the third because it is recommended by the ML Cheat Sheet (for scikit-learn)\footnote{scikit-learn.org/stable/tutorial/machine\_learning\_map/index.html}.
 
-Using the ML Cheat Sheet (for scikit-learn)\footnote{scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html}, we are told to try the following 3 models for our classification task: Linear SVC, KNeighbours Classifier, and SVC, where SVC stands for support vector classification.
-
-\subsection{Model training}
+\subsection{Model training, model testing, and hyperparameter tuning}
 For each of the 3 models, we iteratively train the model on the training set, evaluate the model on the validation set, and tweak the model according to the results on the validation set. In particular, we employ 4-fold cross-validation so that the size of the validation set is equal to the size of the test set. This reduces the chance of overfitting. Then, we pick the model with the set of hyperparameters that does best on the validation set and confirm the results on the test set. This approach allows us to compare different trained models in an unbiased way, by comparing model performance using the test set, which is kept apart from the training process and is therefore unseen data.
 
-\subsection{Model testing}
-\subsection{Hyperparameter tuning}
-\subsection{Inference/Prediction}
+We tried different parameter combinations for each model. For the LRC, we tried values 0.001, 0.01, 0.1, 1, 10, 100, and 1000 for $C$, the regularisation parameter; and, we tried $L_1$ and $L_2$ regularisation for the norm used in the penalisation. For the GBC, we tried values 2, 4, 8, and 16 for the minimum number of samples required to be at a leaf node; and, values 0.001, 0.01, and 0.1 for the learning rate. For the SVC, we tried values 0.75, 0.85, 0.95, and 1 for $C$; linear, polynomial, radial-basis, and sigmoid kernel types; and, values 3, 4, and 5 for the degree of the polynomial kernel function. We present the results from these models in the next section.
 
 \section{Results (25\%)}
+In this section, we present the confusion matrix for each of the three models, the precision and recall tables, as well as  the ROC curves.
+
+For the linear regression classifier, the best accuracy score was 0.80, with $C=10$ and $L_2$ regularisation. For the gradient boosting classifier, the best accuracy score was 
+
+\begin{table}[!htb]
+    \caption{Confusion matrices for each predictive model.}
+    \begin{subtable}{.33\linewidth}
+      \centering
+        \caption{Linear regression.}
+        \begin{tabular}{|c|cc|c|}
+            \hline
+            Pred. & 0 & 1 & all \\
+            Real. & & & \\
+            \hline
+            0 & 185 & 55 & 240\\
+            1 & 148 & 654 & 802\\
+            \hline
+            all & 333 & 709 & 1042\\
+            \hline
+        \end{tabular}
+    \end{subtable}%
+    \begin{subtable}{.33\linewidth}
+      \centering
+        \caption{Gradient boosting.}
+        \begin{tabular}{|c|cc|c|}
+            \hline
+            Pred. & 0 & 1 & all \\
+            Real. & & & \\
+            \hline
+            0 & 112 & 128 & 240\\
+            1 & 19 & 783 & 802\\
+            \hline
+            all & 131 & 911 & 1042\\
+            \hline
+        \end{tabular}
+    \end{subtable}%
+    \begin{subtable}{.33\linewidth}
+        \centering
+          \caption{Support vector.}
+          \begin{tabular}{|c|cc|c|}
+            \hline
+            Pred. & 0 & 1 & all \\
+            Real. & & & \\
+            \hline
+            0 & 109 & 131 & 240\\
+            1 & 24 & 778 & 802\\
+            \hline
+            all & 133 & 909 & 1042\\
+            \hline
+        \end{tabular}
+      \end{subtable} 
+\end{table}
+
+\begin{table}[!htb]
+    \caption{Global caption}
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        Model & NPV & PPV & Specificity & Sensitivity & F1 Score & Accuracy \\
+        \hline
+        LRC & 0.56 & 0.92 & 0.77 & 0.82 & 0.87 & 0.81 \\
+        GBC & 0.85 & 0.86 & 0.47 & 0.98 & 0.91 & 0.86 \\
+        SVC & 0.82 & 0.86 & 0.45 & 0.97 & 0.91 & 0.85 \\
+        \hline
+    \end{tabular}
+\end{table}
+
+
 \begin{itemize}
     \item Make comparisons between the 3 predictive models
     \item Provide necessary tables and charts to summarise and support the comparisons.
@@ -59,6 +124,7 @@ For each of the 3 models, we iteratively train the model on the training set, ev
     \item Further work can include date\_confirmation
     \item We notice we have an imbalanced data set, so we employ down sampling and up-weighting during model training.
     \item Larger k means less (pessimistic) bias. Leave-One-Out Cross-Validation is too computationally expesive.
+    \item  deviance and exponential loss functions to be optimised for gradient boosting
 \end{itemize}
 
 \section{Conclusions and lessons learnt (10\%)}
